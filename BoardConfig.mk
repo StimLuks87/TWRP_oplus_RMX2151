@@ -225,7 +225,10 @@ TW_RECOVERY_ADDITIONAL_RELINK_LIBRARY_FILES += \
     $(TARGET_OUT_SHARED_LIBRARIES)/libashmemd_client.so
 
 ##** TWRP Configuration	**##
-TW_CLOCK_OFFSET := "PAKST-5;PAKDT"																																																																							
+TW_CLOCK_OFFSET := "PAKST-5;PAKDT"	
+TW_TIME_ZONE_VAR := "PAKST-5;PAKDT"
+TW_TIME_ZONE_GUISEL := "PAKST-5;PAKDT"	
+TW_MILITARY_TIME := 1																																																																					
 TW_INPUT_BLACKLIST := "hbtp_vm"
 TW_EXCLUDE_DEFAULT_USB_INIT := true
 TW_EXTRA_LANGUAGES := false
@@ -293,21 +296,26 @@ TW_CUSTOM_CPU_POS := 155
 #TW_CUSTOM_CLOCK_POS := 540
 #TW_STATUS_ICONS_ALIGN := center
 
+PB_DISABLE_DEFAULT_TREBLE_COMP := true
+PB_TORCH_PATH := "/sys/class/flashlight/mt-flash-led1"
+PB_TORCH_MAX_BRIGHTNESS := 1
+PB_OFFICIAL := true
+
 ##** Version/Maintainer **##
 MAINTAINER := Stim@Luks
 
 ##** Custom TWRP Versioning **##
 ##** device version is optional - the default value is "0" if nothing is set in device tree **##
-CUSTOM_TWRP_DEVICE_VERSION := RUI_V3.0
+#CUSTOM_TWRP_DEVICE_VERSION := RUI_V3.0
 
 ##** version prefix is optional - the default value is "LOCAL" if nothing is set in device tree **##
-CUSTOM_TWRP_VERSION_PREFIX := by_StimLuks
+#CUSTOM_TWRP_VERSION_PREFIX := by_StimLuks
 
-include device/common/version-info/custom_twrp_version.mk
+#include device/common/version-info/custom_twrp_version.mk
 
-ifeq ($(CUSTOM_TWRP_VERSION),)
-CUSTOM_TWRP_VERSION := $(shell date +%Y%m%d)-01
-endif
+#ifeq ($(CUSTOM_TWRP_VERSION),)
+#CUSTOM_TWRP_VERSION := $(shell date +%Y%m%d)-01
+#endif
 
 ##** VINTF **##
 #DEVICE_MANIFEST_FILE += $(DEVICE_PATH)/manifest.xml

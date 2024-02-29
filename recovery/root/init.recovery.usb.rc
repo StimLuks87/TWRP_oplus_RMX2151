@@ -29,7 +29,7 @@ on fs && property:ro.debuggable=1
     chown radio radio /sys/devices/platform/battery/Charging_CallState
 
 on fs && property:sys.usb.configfs=1
-    setprop vendor.usb.vid "0x0e8d"
+    setprop vendor.usb.vid "0x22d9"
     mkdir /config
     mkdir /dev/usb-ffs 0770 shell shell
     mkdir /dev/usb-ffs/adb 0770 shell shell
@@ -37,7 +37,7 @@ on fs && property:sys.usb.configfs=1
     mkdir /dev/usb-ffs/fastboot 0770 system system
     mount configfs none /config
     mkdir /config/usb_gadget/g1 0770 shell shell
-    write /config/usb_gadget/g1/idVendor ${vendor.usb.vid}
+    write /config/usb_gadget/g1/idVendor 0x18D1
     write /config/usb_gadget/g1/bcdDevice 0x0404
     write /config/usb_gadget/g1/bcdUSB 0x0210
     write /config/usb_gadget/g1/os_desc/use 1
@@ -49,7 +49,8 @@ on fs && property:sys.usb.configfs=1
     mkdir /config/usb_gadget/g1/functions/audio_source.gs3
     mkdir /config/usb_gadget/g1/functions/ffs.adb
     mkdir /config/usb_gadget/g1/functions/ffs.mtp
-    write /config/usb_gadget/g1/functions/ffs.mtp/os_desc/interface.MTP/compatible_id "MTP"
+    mkdir /config/usb_gadget/g1/functions/mtp.gs0
+    write /config/usb_gadget/g1/functions/mtp.gs0/os_desc/interface.MTP/compatible_id "MTP"
     mkdir /config/usb_gadget/g1/functions/ffs.fastboot
     mkdir /config/usb_gadget/g1/functions/acm.gs0
     mkdir /config/usb_gadget/g1/functions/acm.gs1
@@ -77,6 +78,18 @@ on fs && property:sys.usb.configfs=1
     write /sys/class/android_usb/android0/iProduct ${ro.product.model}
     write /sys/class/android_usb/android0/iSerial ${ro.serialno}
     
+on property:sys.usb.config=adb
+    start adbd
+    start console
+    start logd
+
+on property:sys.usb.config=mtp,adb && property:sys.usb.configfs=1
+    start adbd
+
+on property:sys.usb.config=fastboot
+    start fastbootd
+    setprop sys.usb.configfs 1
+
 on property:sys.usb.config=none && property:sys.usb.configfs=1
     write /config/usb_gadget/g1/UDC "none"
     stop adbd
@@ -113,7 +126,7 @@ on property:sys.usb.config=fastboot && property:sys.usb.ffs.ready=1 && property:
     write /sys/class/udc/musb-hdrc/device/cmode 1
     setprop sys.usb.state ${sys.usb.config}
 
-on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mtp && property:sys.usb.configfs=1
+on property:sys.usb.config=mtp && property:sys.usb.configfs=1
     setprop sys.usb.ffs.mtp.ready 1
     write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "mtp"
     rm /config/usb_gadget/g1/configs/b.1/f1
@@ -125,7 +138,7 @@ on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mtp && property:sys.u
     write /config/usb_gadget/g1/idVendor 0x2717
     write /config/usb_gadget/g1/idProduct 0xff40
     write /config/usb_gadget/g1/os_desc/use 1
-    symlink /config/usb_gadget/g1/functions/ffs.mtp /config/usb_gadget/g1/configs/b.1/f1
+    symlink /config/usb_gadget/g1/functions/mtp.gs0 /config/usb_gadget/g1/configs/b.1/f1
     write /config/usb_gadget/g1/UDC ${sys.usb.controller}
     setprop sys.usb.state ${sys.usb.config}
 
@@ -272,15 +285,3 @@ on property:sys.usb.typec.power_role=sink
 on userspace-reboot-requested
   setprop sys.usb.config ""
   setprop sys.usb.state ""
-
-### HID for KPOC ###
-on property:sys.usb.config=hid && property:sys.usb.configfs=1
-    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "HID"
-    write /config/usb_gadget/g1/idProduct 0x20FF
-    write /config/usb_gadget/g1/functions/hid.gs0/protocol 0
-    write /config/usb_gadget/g1/functions/hid.gs0/subclass 0
-    #write /config/usb_gadget/g1/functions/hid.gs0/report_length 4
-    #write /config/usb_gadget/g1/functions/hid.gs0/report_desc \\x05\\x01\\x09\\x00\\xa1\\x01\\xc0
-    symlink /config/usb_gadget/g1/functions/hid.gs0 /config/usb_gadget/g1/configs/b.1/f1
-    write /config/usb_gadget/g1/UDC ${vendor.usb.controller}
-    setprop sys.usb.state ${sys.usb.config}

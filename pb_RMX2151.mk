@@ -18,11 +18,11 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 $(call inherit-product-if-exists, vendor/pb/config/common.mk)
 
 # Inherit from TWRP-common stuff, if building TWRP.
-$(call inherit-product-if-exists, vendor/twrp/config/common.mk)
+#$(call inherit-product-if-exists, vendor/twrp/config/common.mk)
 
 ##** Device Information **##
 PRODUCT_DEVICE := RMX2151
-PRODUCT_NAME := twrp_$(PRODUCT_DEVICE)
+PRODUCT_NAME := pb_$(PRODUCT_DEVICE)
 PRODUCT_BRAND := oplus
 PRODUCT_MODEL := RMX2151
 PRODUCT_MANUFACTURER := $(PRODUCT_BRAND)
