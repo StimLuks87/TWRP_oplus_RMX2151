@@ -298,7 +298,7 @@ TW_CUSTOM_CPU_POS := 155
 
 PB_DISABLE_DEFAULT_TREBLE_COMP := true
 PB_TORCH_PATH := "/sys/class/flashlight/mt-flash-led1"
-PB_TORCH_MAX_BRIGHTNESS := 1
+PB_TORCH_MAX_BRIGHTNESS := 31
 PB_OFFICIAL := true
 
 ##** Version/Maintainer **##
